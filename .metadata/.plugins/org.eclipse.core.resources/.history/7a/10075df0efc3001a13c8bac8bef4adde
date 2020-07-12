@@ -1,0 +1,11 @@
+import static io.restassured.RestAssured.*;
+
+public class JIraTest {
+
+	public static void main(String[] args) {
+		
+		givan().path
+
+	}
+
+}

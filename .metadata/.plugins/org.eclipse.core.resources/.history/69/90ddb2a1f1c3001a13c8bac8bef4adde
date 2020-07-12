@@ -1,0 +1,37 @@
+import static io.restassured.RestAssured.*;
+
+import files.ReUsableMethod;
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+
+public class JiraTest {
+
+	public static void main(String[] args) {
+	RestAssured.baseURI="http://localhost:8080";
+	
+	String resp = given()
+	.body("{ \"username\": \"kant.dos\", \"password\": \"Asdf@123\" }").log().all()
+	.when()
+	.post("/rest/auth/1/session")
+	.then().log().all().assertThat().statusCode(200)
+	.extract().response().asString();
+	
+	JsonPath js = ReUsableMethod.rawToJson(resp);
+	String id = js.getString("ID");
+	System.out.println(id);
+	
+		given().pathParam("id","10200").log().all().
+		.body("{\r\n" + 
+				"    \"body\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.\",\r\n" + 
+				"    \"visibility\": {\r\n" + 
+				"        \"type\": \"role\",\r\n" + 
+				"        \"value\": \"Administrators\"\r\n" + 
+				"    }\r\n" + 
+				"}")
+		.when()
+		.post("/rest/api/2/issue/{id}/comment/")
+		
+
+	}
+
+}

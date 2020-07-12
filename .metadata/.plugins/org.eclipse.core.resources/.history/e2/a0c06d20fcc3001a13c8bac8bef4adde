@@ -1,0 +1,46 @@
+import static io.restassured.RestAssured.*;
+import io.restassured.RestAssured;
+import io.restassured.filter.session.SessionFilter;
+
+public class JiraTest {
+	public static void main(String[] args) {
+	RestAssured.baseURI="http://localhost:8080";
+	
+	SessionFilter sessionid = new SessionFilter();
+	String resp = given()
+	.header("Content-Type","application/json")
+	.body("{ \"username\": \"kant.dos\", \"password\": \"Asdf@123\" }").log().all()
+	.filter(sessionid)
+	.when()
+	.post("/rest/auth/1/session")
+	.then().log().all().assertThat().statusCode(200)
+	.extract().response().asString();
+	/*
+	JsonPath js = ReUsableMethod.rawToJson(resp);
+	String sessionid = js.getString("session.value");
+	System.out.println(sessionid);
+	*/
+	
+		String comment =
+		given()
+		.header("Content-Type","application/json")		.pathParam("id","10200").log().all()
+		//.header("JSESSIONID","sessionid")
+		.body("{\r\n" + 
+				"    \"body\": \"Commnet from Automation\",\r\n" + 
+				"    \"visibility\": {\r\n" + 
+				"        \"type\": \"role\",\r\n" + 
+				"        \"value\": \"Administrators\"\r\n" + 
+				"    }\r\n" + 
+				"}")
+		.filter(sessionid)
+		.when()
+		.post("/rest/api/2/issue/{id}/comment/")
+		.then().log().all().assertThat().statusCode(201)
+		.extract().response().asString();
+		System.out.println(comment);
+
+		given().header("X-Atlassian-Token: no-check")
+		.
+	}
+
+}
